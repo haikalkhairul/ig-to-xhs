@@ -71,7 +71,7 @@ This project automates the process of scraping Instagram posts and publishing th
 ## To-do/Improvements
 - [ ] **Track Uploaded Posts**: Implement functionality to track which Instagram posts have already been uploaded to Xiaohongshu. This will prevent duplicate posts when scraping for new content.
 - [ ] **Background Scheduler**: Add a scheduling mechanism to periodically check for new Instagram posts. This will allow the program to run in the background and automatically create Xiaohongshu posts when new content is detected.
-- [] **Topic Utilization**: Xiaohongshu has 'topics' as their platforms version of hashtags, however, it uses Chinese characters, which makes it slightly challenging to ensure correct translation for the topic.
+- [ ] **Topic Utilization**: Xiaohongshu has 'topics' as their platforms version of hashtags, however, it uses Chinese characters, which makes it slightly challenging to ensure correct translation for the topic.
 - [ ] **Containerization**: Containerize the application using Docker to simplify deployment and ensure consistent runtime environments across different systems.
 
 ## License
