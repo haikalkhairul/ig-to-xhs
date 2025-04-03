@@ -12,7 +12,8 @@ This project automates the process of scraping Instagram posts and publishing th
 2. **Google Chrome**: Required for Selenium.
 3. **ChromeDriver**: Ensure the ChromeDriver version matches your Chrome browser version.
 4. **Apify Account**: Obtain an API token from [Apify](https://apify.com/).
-5. **Xiaohongshu Account**: Ensure you have an account for posting.
+5. **DeepL Account**: Obtain an API token from [DeepL](https://www.deepl.com/en/products/api).
+6. **Xiaohongshu Account**: Ensure you have an account for posting.
 
 ## Installation
 1. Clone this repository:
@@ -34,6 +35,7 @@ This project automates the process of scraping Instagram posts and publishing th
    - Edit `config.py` to set your Apify API token and Instagram username:
      ```python
      APIFY_API_TOKEN = 'your-apify-api-token'
+     DEEPL_API_TOKEN='your-deepl-api-token'
      INSTAGRAM_USERNAME_TO_SCRAPE = 'your-instagram-username'
      ONLY_POSTS_NEWER_THAN_DAYS = 5  # Number of days to scrape posts from
      POST_LIMIT = 1  # Number of posts to scrape
@@ -64,6 +66,9 @@ This project automates the process of scraping Instagram posts and publishing th
 - Xiaohongshu login may require manual intervention if cookies or tokens are invalid.
 - Images are downloaded to an `imgs` directory in the project root.
 
+## Why?
+- To broaden the audience by reaching a new platform and tailoring content to its primary language, ensuring better engagement and resonance with the target community.
+
 ## Troubleshooting
 - If the Xiaohongshu login fails, ensure your cookies or token are valid.
 - For Selenium issues, verify that your ChromeDriver version matches your Chrome browser version.
@@ -73,6 +78,7 @@ This project automates the process of scraping Instagram posts and publishing th
 - [ ] **Background Scheduler**: Add a scheduling mechanism to periodically check for new Instagram posts. This will allow the program to run in the background and automatically create Xiaohongshu posts when new content is detected.
 - [ ] **Topic Utilization**: Xiaohongshu has 'topics' as their platforms version of hashtags, however, it uses Chinese characters, which makes it slightly challenging to ensure correct translation for the topic.
 - [ ] **Containerization**: Containerize the application using Docker to simplify deployment and ensure consistent runtime environments across different systems.
+- [x] **Better Translation**: Utilize DeepL instead of Google Translate as the translation yields better accuracy
 
 ## License
 This project is licensed under the MIT License.

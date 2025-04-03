@@ -1,9 +1,36 @@
 import os
 import requests
-from googletrans import Translator
+from deepl import Translator
 from ig_scraper import InstagramScraper
 from xhs_poster import XiaohongshuPoster
-from config import INSTAGRAM_USERNAME_TO_SCRAPE, ONLY_POSTS_NEWER_THAN_DAYS, POST_LIMIT
+from config import DEEPL_API_TOKEN, INSTAGRAM_USERNAME_TO_SCRAPE, ONLY_POSTS_NEWER_THAN_DAYS, POST_LIMIT
+import re
+
+def preprocess_caption(caption):
+    # Rewrite this method to preprocess the caption as needed
+
+    # Surround item names after food/drink emoji with <x>...</x>
+    food_drink_emojis = [
+        "🍎", "🍊", "🍌", "🍉", "🍇", "🍓", "🍒", "🍍", "🥭", "🥝", "🍅", "🥑", "🍆", "🥕", "🌽", "🥔", "🍠", "🥒", 
+        "🥬", "🥦", "🧄", "🧅", "🍄", "🥜", "🌰", "🍞", "🥐", "🥖", "🥨", "🥯", "🧀", "🥚", "🍳", "🥞", "🧇", "🥓", 
+        "🥩", "🍗", "🍖", "🌭", "🍔", "🍟", "🍕", "🥪", "🌮", "🌯", "🥗", "🥘", "🥫", "🍝", "🍜", "🍲", "🍛", "🍣", 
+        "🍱", "🥟", "🍤", "🍙", "🍚", "🍘", "🍥", "🥠", "🥮", "🍢", "🍡", "🍧", "🍨", "🍦", "🥧", "🍰", "🎂", "🧁", 
+        "🍮", "🍭", "🍬", "🍫", "🍿", "🧂", "🥤", "🧃", "🧉", "🧊", "🍺", "🍻", "🥂", "🍷", "🥃", "🍸", "🍹", "🍾", 
+        "🍼", "☕", "🍵", "🫖", "🥛", "🍽️"
+    ]
+    caption = re.sub(
+        rf"({'|'.join(map(re.escape, food_drink_emojis))} [^\n:]+)", 
+        r"<x>\1</x>", 
+        caption
+    )
+    return caption
+
+def postprocess_caption(caption):
+    # Rewrite this method to postprocess the caption as needed
+
+    # Remove <x>...</x> tags
+    caption = re.sub(r"<x>(.*?)</x>", r"\1", caption)
+    return caption
 
 def scrape_and_post(username, days, post_limit):
     # Create 'imgs' directory if it doesn't exist
@@ -23,7 +50,7 @@ def scrape_and_post(username, days, post_limit):
     run = scraper.run()
 
     # Initialize translator and Xiaohongshu poster
-    translator = Translator()
+    translator = Translator(DEEPL_API_TOKEN)
     poster = XiaohongshuPoster()
 
     for item in scraper.client.dataset(run["defaultDatasetId"]).iterate_items():
@@ -42,18 +69,25 @@ def scrape_and_post(username, days, post_limit):
         print("Translating caption...")
         caption = item.get("caption", "")
         print(f'Original caption: {caption}')
-        translated_caption = translator.translate(caption, src="en", dest="zh-cn").text
+        caption = preprocess_caption(caption)
+        print(f'Preprocessed caption: {caption}')
+        translated_caption = translator.translate_text(
+            caption,
+            source_lang="EN",
+            target_lang="ZH-HANS",
+            preserve_formatting=True,
+            model_type="prefer_quality_optimized",
+            tag_handling="xml",
+            ignore_tags="x",
+            ).text
+        translated_caption = postprocess_caption(translated_caption)
         print(f'Translated caption: {translated_caption})')
 
-
-        # Generate title (first 10 Chinese characters of the translated caption)
         title = translated_caption[:20]
         print(f'Title: {title}')
 
-        #Login to Xiaohongshu
         print("Logging in to Xiaohongshu...")
         poster.login()
-        # Post to Xiaohongshu
         print("Posting to Xiaohongshu...")
         poster.post_article(title=title, content=translated_caption, images=image_paths)
 

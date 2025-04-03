@@ -1,5 +1,5 @@
 config.py
-xiaohongshu_cookies.json
+xiaohongshu_cookies*.json
 venv/
 imgs/
 __pycache__/
